@@ -28,13 +28,17 @@ public class FileReadActivity extends AppCompatActivity {
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		
 		tv = (TextView) findViewById(R.id.file_read_textview);
+
+		
 		
 		filePath = getIntent().getStringExtra("filePath");
 		
 		setTitle(new File(filePath).getName());
 
-		String content = MyFileReader.getInstance().read(filePath);
-		tv.setText(content);
+//		String content = MyFileReader.getInstance().read(filePath);
+//		tv.setText(content);
+
+		MyFileReader.getInstance().render(filePath, tv);
 	}
 
 	@Override

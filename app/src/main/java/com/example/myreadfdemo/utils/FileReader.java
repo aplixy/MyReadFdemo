@@ -5,8 +5,8 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.util.Xml;
 
-import com.example.myreadfdemo.text_type.DocxType;
-import com.example.myreadfdemo.text_type.IBaseTextType;
+import com.example.myreadfdemo.text_type.DocxOfficeItem;
+import com.example.myreadfdemo.text_type.IBaseOfficeItem;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -64,7 +64,7 @@ public class FileReader {
 	private File myFile;
 	private StringBuffer lsb = new StringBuffer();
 
-	private IBaseTextType mTextType;
+	private IBaseOfficeItem mTextType;
 
 
 	private FileReader() {
@@ -105,7 +105,7 @@ public class FileReader {
 			Logger.d("htmlPath" + this.htmlPath);
 		} else if (this.filePath.endsWith(".docx")) {
 			this.makeFile();
-			mTextType = new DocxType(filePath);
+			mTextType = new DocxOfficeItem(filePath);
 			String content = mTextType.getContent().toString();
 			Logger.e("content--->" + content);
 

@@ -19,11 +19,11 @@ import java.util.zip.ZipFile;
  * Created by lixinyu on 2017/5/8.
  */
 
-public class DocxType extends AbsTextType {
+public class DocxOfficeItem extends AbsOfficeItem {
 	
 	private String mFilePath;
 	
-	public DocxType(String filePath) {
+	public DocxOfficeItem(String filePath) {
 		this.mFilePath = filePath;
 	}
 	

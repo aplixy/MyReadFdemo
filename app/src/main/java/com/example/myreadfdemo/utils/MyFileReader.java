@@ -1,8 +1,12 @@
 package com.example.myreadfdemo.utils;
 
-import com.example.myreadfdemo.text_type.DocType;
-import com.example.myreadfdemo.text_type.DocxType;
-import com.example.myreadfdemo.text_type.IBaseTextType;
+import android.widget.TextView;
+
+import com.example.myreadfdemo.text_type.DocOfficeItem;
+import com.example.myreadfdemo.text_type.DocxOfficeItem;
+import com.example.myreadfdemo.text_type.DocxOfficeItem2;
+import com.example.myreadfdemo.text_type.IBaseOfficeItem;
+import com.example.myreadfdemo.text_type.IBaseOfficeItemRender;
 
 /**
  * Created by lixinyu on 2017/5/8.
@@ -12,7 +16,7 @@ public class MyFileReader {
 	
 	private static MyFileReader mInstance;
 
-	private IBaseTextType mTextType;
+	private IBaseOfficeItem mTextType;
 
 	private MyFileReader() {
 
@@ -37,9 +41,9 @@ public class MyFileReader {
 		String content = null;
 
 		if (filePath.endsWith(".doc")) {
-			mTextType = new DocType(filePath);
+			mTextType = new DocOfficeItem(filePath);
 		} else if (filePath.endsWith(".docx")) {
-			mTextType = new DocxType(filePath);
+			mTextType = new DocxOfficeItem(filePath);
 		} else if (filePath.endsWith(".xls")) {
 
 		} else if (filePath.endsWith(".xlsx")) {
@@ -51,5 +55,23 @@ public class MyFileReader {
 		if (null != sequence) content = sequence.toString();
 
 		return content;
+	}
+	
+	public void render(String filePath, TextView textView) {
+
+
+		if (filePath.endsWith(".doc")) {
+			
+		} else if (filePath.endsWith(".docx")) {
+			IBaseOfficeItemRender itemRender = new DocxOfficeItem2(filePath, textView);
+			itemRender.render();
+		} else if (filePath.endsWith(".xls")) {
+
+		} else if (filePath.endsWith(".xlsx")) {
+
+		}
+		
+
+
 	}
 }

@@ -4,7 +4,7 @@ package com.example.myreadfdemo.text_type;
  * Created by lixinyu on 2017/5/8.
  */
 
-public abstract class AbsTextType implements IBaseTextType {
+public abstract class AbsOfficeItem implements IBaseOfficeItem {
 
 	protected int decideSize(int size) {
 

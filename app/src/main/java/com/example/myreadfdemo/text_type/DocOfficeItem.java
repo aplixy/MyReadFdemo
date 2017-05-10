@@ -22,7 +22,7 @@ import java.util.List;
  * Created by lixinyu on 2017/5/8.
  */
 
-public class DocType extends AbsTextType {
+public class DocOfficeItem extends AbsOfficeItem {
 	private String mFilePath;
 	private FileInputStream mFileInputStream;
 
@@ -31,7 +31,7 @@ public class DocType extends AbsTextType {
 
 	private int presentPicture = 0;
 
-	public DocType(String filePath) {
+	public DocOfficeItem(String filePath) {
 		this.mFilePath = filePath;
 	}
 	
