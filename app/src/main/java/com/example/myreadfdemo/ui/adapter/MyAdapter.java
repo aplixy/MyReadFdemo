@@ -1,4 +1,4 @@
-package com.example.myreadfdemo;
+package com.example.myreadfdemo.ui.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.myreadfdemo.R;
 
 import java.util.ArrayList;
 import java.util.List;

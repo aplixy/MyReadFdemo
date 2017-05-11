@@ -1,4 +1,4 @@
-package com.example.myreadfdemo;
+package com.example.myreadfdemo.ui.activity;
 
 import android.Manifest;
 import android.content.Intent;
@@ -9,6 +9,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.example.myreadfdemo.R;
+import com.example.myreadfdemo.ui.adapter.ListItem;
+import com.example.myreadfdemo.ui.adapter.MyAdapter;
 import com.example.myreadfdemo.utils.FileUtils;
 import com.yxp.permission.util.lib.PermissionUtil;
 import com.yxp.permission.util.lib.callback.PermissionResultCallBack;
@@ -18,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+public class MainActivity1 extends AppCompatActivity implements AdapterView.OnItemClickListener {
 	
 	private SwipeRefreshLayout mSwipeRefreshLayout;
 	
@@ -29,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main1);
 
 		findVies();
 		init();
@@ -98,15 +101,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 			public void onResult(List<File> files) {
 				if (null == files || files.size() == 0) {
 					files = new ArrayList<File>();
-					FileUtils.copySingleAssetsToDst(MainActivity.this, "test_assets.doc", FileUtils.APP_PATH + "test_assets.doc");
-					FileUtils.copySingleAssetsToDst(MainActivity.this, "test_assets.docx", FileUtils.APP_PATH + "test_assets.docx");
+					FileUtils.copySingleAssetsToDst(MainActivity1.this, "test_assets.doc", FileUtils.APP_PATH + "test_assets.doc");
+					FileUtils.copySingleAssetsToDst(MainActivity1.this, "test_assets.docx", FileUtils.APP_PATH + "test_assets.docx");
 
 					files.add(new File(FileUtils.APP_PATH + "test_assets.doc"));
 					files.add(new File(FileUtils.APP_PATH + "test_assets.docx"));
 				}
 
-				FileUtils.copySingleAssetsToDst(MainActivity.this, "test_assets3.doc", FileUtils.APP_PATH + "test_assets3.doc");
-				FileUtils.copySingleAssetsToDst(MainActivity.this, "test_assets2.docx", FileUtils.APP_PATH + "test_assets2.docx");
+				FileUtils.copySingleAssetsToDst(MainActivity1.this, "test_assets3.doc", FileUtils.APP_PATH + "test_assets3.doc");
+				FileUtils.copySingleAssetsToDst(MainActivity1.this, "test_assets2.docx", FileUtils.APP_PATH + "test_assets2.docx");
 
 				files.add(new File(FileUtils.APP_PATH + "test_assets3.doc"));
 				files.add(new File(FileUtils.APP_PATH + "test_assets2.docx"));
@@ -132,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 					mDatas.add(item);
 				}
 
-				mAdapter = new MyAdapter(MainActivity.this, mDatas);
+				mAdapter = new MyAdapter(MainActivity1.this, mDatas);
 				mListView.setAdapter(mAdapter);
 
 				mSwipeRefreshLayout.setRefreshing(false);

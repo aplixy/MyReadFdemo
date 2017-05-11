@@ -1,10 +1,11 @@
-package com.example.myreadfdemo;
+package com.example.myreadfdemo.ui.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.example.myreadfdemo.R;
 import com.example.myreadfdemo.utils.MyFileReader;
 
 import java.io.File;

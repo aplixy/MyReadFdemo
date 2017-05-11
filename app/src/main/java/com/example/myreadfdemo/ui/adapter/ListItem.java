@@ -1,4 +1,4 @@
-package com.example.myreadfdemo;
+package com.example.myreadfdemo.ui.adapter;
 
 /**
  * Created by lixinyu on 2017/5/9.

@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.myreadfdemo.MainActivity">
+    android:orientation="vertical"
+    tools:context=".ui.activity.MainActivity">
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/main_swiperefreshlayout"
+    <FrameLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
-        <ListView
-            android:id="@+id/main_listview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-    </android.support.v4.widget.SwipeRefreshLayout>
-</FrameLayout>
+    <com.example.myreadfdemo.ui.widget.BottomNavigatorView
+        android:id="@+id/bottomNavigatorView"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:clipToPadding="false"
+        android:background="@android:color/white"
+        android:elevation="8dp" />
+
+</LinearLayout>

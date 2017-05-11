@@ -2,8 +2,8 @@ package com.example.myreadfdemo.utils;
 
 import android.widget.TextView;
 
-import com.example.myreadfdemo.office.IBaseOfficeRender;
-import com.example.myreadfdemo.office.RenderFactory;
+import com.example.myreadfdemo.office.render.IBaseOfficeRender;
+import com.example.myreadfdemo.office.render.RenderFactory;
 
 /**
  * Created by lixinyu on 2017/5/8.
