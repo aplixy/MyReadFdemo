@@ -1,7 +1,13 @@
-package com.example.myreadfdemo.text_type;
+package com.example.myreadfdemo.office;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.util.Xml;
+import android.widget.TextView;
 
+import com.example.myreadfdemo.MyApplication;
 import com.example.myreadfdemo.utils.Logger;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -11,6 +17,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
@@ -19,17 +28,20 @@ import java.util.zip.ZipFile;
  * Created by lixinyu on 2017/5/8.
  */
 
-public class DocxOfficeItem extends AbsOfficeItem {
-	
+public class DocxOfficeRender extends AbsOfficeRender {
+
 	private String mFilePath;
-	
-	public DocxOfficeItem(String filePath) {
+
+	private WeakReference<Map<String, Drawable>> weakRefDrawable;
+	private Map<String, Drawable> drawables;
+
+	public DocxOfficeRender(String filePath) {
 		this.mFilePath = filePath;
 	}
-	
+
 	@Override
-	public CharSequence getContent() {
-		StringBuilder riverBuilder = null;
+	public void render(TextView textView) {
+		StringBuilder stringBuilder = null;
 		try {
 
 			ZipFile xlsxFile = new ZipFile(new File(mFilePath));
@@ -102,26 +114,10 @@ public class DocxOfficeItem extends AbsOfficeItem {
 							Logger.d("col begin");
 						}
 
-						if (tag.equalsIgnoreCase("pict")) {  //检测到标签  pict  图片
+						if (tag.equalsIgnoreCase("pic")) {  //检测到标签  pict  图片
 							Logger.d("检测到图片");
-							ZipEntry sharePicture = xlsxFile.getEntry("word/media/image" + pictureIndex + ".jpeg");//一下为读取docx的图片  转化为流数组
-							InputStream pictIS = xlsxFile.getInputStream(sharePicture);
-							ByteArrayOutputStream pOut = new ByteArrayOutputStream();
-							byte[] bt = null;
-							byte[] b = new byte[1000];
-							int len = 0;
-							while ((len = pictIS.read(b)) != -1) {
-								pOut.write(b, 0, len);
-							}
-							pictIS.close();
-							pOut.close();
-							bt = pOut.toByteArray();
-							Logger.i("图片byteArray : ", "" + bt);
-							if (pictIS != null)
-								pictIS.close();
-							if (pOut != null)
-								pOut.close();
-							writeDOCXPicture(bt);
+
+							cachePict(xlsxFile, pictureIndex, stringBuilder);
 
 							pictureIndex++;  //转换一张后 索引+1
 						}
@@ -149,17 +145,17 @@ public class DocxOfficeItem extends AbsOfficeItem {
 							if (isItalic == true) {       //检测到斜体标签,输入<i>
 								Logger.d("斜体开始");
 							}
-							
+
 							// 输出内容
 							String river = xmlParser.nextText();
 							Logger.w("river : " + river);
-							if (null == riverBuilder) {
-								riverBuilder = new StringBuilder();
+							if (null == stringBuilder) {
+								stringBuilder = new StringBuilder();
 							}
-							
-							riverBuilder.append(river);
-							
-							
+
+							stringBuilder.append(river);
+
+
 							if (isItalic == true) {      //检测到斜体标签,在输入值之后,输入</i>,并且斜体状态=false
 								Logger.d("斜体结束");
 								isItalic = false;
@@ -206,8 +202,8 @@ public class DocxOfficeItem extends AbsOfficeItem {
 						if (tag2.equalsIgnoreCase("p")) {   //p结束,如果在表格中就无视
 							Logger.d("docx p标签结束");
 							if (isTable == false) {
-								if (null != riverBuilder) {
-									riverBuilder.append("\n");
+								if (null != stringBuilder) {
+									stringBuilder.append("<br/>");
 								}
 							}
 						}
@@ -228,17 +224,132 @@ public class DocxOfficeItem extends AbsOfficeItem {
 		} catch (XmlPullParserException e) {
 			e.printStackTrace();
 		}
-		if (riverBuilder == null) {
+		if (stringBuilder == null) {
 			Logger.e("解析文件出错");
-		} else {
-			return riverBuilder.toString();
+			return;
 		}
-		
-		return null;
+
+		realRender(stringBuilder, textView, weakRefDrawable);
+
+
 	}
 
-	private void writeDOCXPicture(byte[] pictureBytes) {
-		//Bitmap bitmap = BitmapFactory.decodeByteArray(pictureBytes, 0, pictureBytes.length);
-		
+	private void cachePict(ZipFile xlsxFile, int pictureIndex, StringBuilder builder) {
+		ZipEntry sharePicture = xlsxFile.getEntry("word/media/image" + pictureIndex + ".jpeg");//一下为读取docx的图片  转化为流数组
+		InputStream pictInputStrem = null;
+		ByteArrayOutputStream byteArrayOutputStream = null;
+		try {
+			pictInputStrem = xlsxFile.getInputStream(sharePicture);
+			byteArrayOutputStream = new ByteArrayOutputStream();
+			byte[] bytes = null;
+			byte[] bytesIn = new byte[1000];
+			int len = 0;
+			while ((len = pictInputStrem.read(bytesIn)) != -1) {
+				byteArrayOutputStream.write(bytesIn, 0, len);
+			}
+			pictInputStrem.close();
+			byteArrayOutputStream.close();
+			bytes = byteArrayOutputStream.toByteArray();
+			Logger.i("图片byteArray : ", "" + bytes);
+
+			Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+			Drawable drawable = new BitmapDrawable(MyApplication.getApplication().getResources(), bitmap);
+			drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+			
+			if (null == drawables) {
+				drawables = new HashMap<>();
+			}
+
+			drawables.put("image" + pictureIndex, drawable);
+			weakRefDrawable = new WeakReference<Map<String, Drawable>>(drawables);
+
+			if (null == builder) builder = new StringBuilder();
+			builder.append("<img src='image" + pictureIndex + "'>");
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (pictInputStrem != null)
+					pictInputStrem.close();
+				if (byteArrayOutputStream != null)
+					byteArrayOutputStream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
+	
+//	private void realRender(StringBuilder stringBuilder) {
+//		Logger.w("render", "stringBuilder--->" + stringBuilder);
+//		
+//		if (null == stringBuilder) return;
+//
+//		Spanned spanned = Html.fromHtml(stringBuilder.toString(), new Html.ImageGetter() {
+//			@Override
+//			public Drawable getDrawable(String source) {
+//				Logger.i("source--->" + source);
+//				if (null != weakRefDrawable) {
+//					Map<String, Drawable> drawables = weakRefDrawable.get();
+//					if (null != drawables) {
+//						Drawable drawable = drawables.get(source);
+//						
+//						return drawable;
+//					}
+//				}
+//				return null;
+//			}
+//		}, null);
+//
+//		mTextView.setText(spanned);
+//	}
+//
+//	protected int decideSize(int size) {
+//
+//		if (size >= 1 && size <= 8) {
+//			return 1;
+//		}
+//		if (size >= 9 && size <= 11) {
+//			return 2;
+//		}
+//		if (size >= 12 && size <= 14) {
+//			return 3;
+//		}
+//		if (size >= 15 && size <= 19) {
+//			return 4;
+//		}
+//		if (size >= 20 && size <= 29) {
+//			return 5;
+//		}
+//		if (size >= 30 && size <= 39) {
+//			return 6;
+//		}
+//		if (size >= 40) {
+//			return 7;
+//		}
+//		return 3;
+//	}
+
+//	private void readWord2007() {
+//		String path = android.os.Environment.getExternalStorageDirectory() + "/docx.docx";
+//		try {
+//			OPCPackage oPCPackage = POIXMLDocument.openPackage(mFilePath);
+//			XWPFDocument xwpf = new XWPFDocument(oPCPackage);
+//
+//			POIXMLTextExtractor ex = new XWPFWordExtractor(xwpf);
+//
+//			Logger.v("ex.getText()--->" + ex.getText());
+//
+//
+//			//tv.setText(ex.getText()) ;
+//
+//
+//		} catch (FileNotFoundException e) {
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//	}
+	
+	
 }

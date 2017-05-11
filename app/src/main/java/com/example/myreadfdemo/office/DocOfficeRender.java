@@ -1,5 +1,12 @@
-package com.example.myreadfdemo.text_type;
+package com.example.myreadfdemo.office;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.widget.TextView;
+
+import com.example.myreadfdemo.MyApplication;
 import com.example.myreadfdemo.utils.Logger;
 
 import org.apache.poi.hwpf.HWPFDocument;
@@ -16,27 +23,35 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by lixinyu on 2017/5/8.
  */
 
-public class DocOfficeItem extends AbsOfficeItem {
+public class DocOfficeRender extends AbsOfficeRender {
 	private String mFilePath;
+	//private TextView mTextView;
+	
 	private FileInputStream mFileInputStream;
 
 	private List<Picture> pictures;
 	private TableIterator tableIterator;
 
-	private int presentPicture = 0;
+	private WeakReference<Map<String, Drawable>> weakRefDrawable;
+	private Map<String, Drawable> drawables;
 
-	public DocOfficeItem(String filePath) {
+	private int pictureIndex = 0;
+
+	public DocOfficeRender(String filePath) {
 		this.mFilePath = filePath;
+		//this.mTextView = textView;
 	}
 	
 
-	@Override
 	public CharSequence getContent() {
 		Range range = getRange();
 		StringBuilder builder = readDOC(range);
@@ -85,7 +100,7 @@ public class DocOfficeItem extends AbsOfficeItem {
 	private StringBuilder readDOC(Range range) {
 		if (null == range) return null;
 		
-		StringBuilder builder = null;
+		StringBuilder builder = new StringBuilder();
 
 		try {
 
@@ -97,11 +112,7 @@ public class DocOfficeItem extends AbsOfficeItem {
 				if (!(p.isInTable())) {
 					Logger.d("paragraph begin");
 					
-					if (builder == null) {
-						builder = new StringBuilder();
-					}
-					
-					builder.append(writeParagraphContent(p));
+					builder.append(getParagraphContent(p).append("<br/>"));
 					Logger.d("paragraph end");
 				} else {
 					int temp = i;
@@ -129,22 +140,23 @@ public class DocOfficeItem extends AbsOfficeItem {
 									Paragraph p1 = range.getParagraph(cp);
 									Logger.d("paragraph begin");
 
-									if (builder == null) {
-										builder = new StringBuilder();
-									}
-									builder.append(writeParagraphContent(p1));
+									builder.append(getParagraphContent(p1));
 									
 									Logger.d("paragraph end");
 									temp++;
 								}
 								Logger.d("col end");
+								builder.append(" ");
 							}
 							int max1 = temp + rowNumParagraphs;
 							for (int m = temp + colsNumParagraphs; m < max1; m++) {
 								Paragraph p2 = range.getParagraph(m);
+								builder.append(getParagraphContent(p2));
 								temp++;
 							}
 							Logger.d("row end");
+							
+							builder.append("<br/>");
 						}
 						Logger.d("table end");
 					}
@@ -159,8 +171,8 @@ public class DocOfficeItem extends AbsOfficeItem {
 		return builder;
 	}
 
-	private StringBuilder writeParagraphContent(Paragraph paragraph) {
-		StringBuilder builder = null;
+	private StringBuilder getParagraphContent(Paragraph paragraph) {
+		StringBuilder builder = new StringBuilder();
 
 		int pnumCharacterRuns = paragraph.numCharacterRuns();
 
@@ -169,14 +181,10 @@ public class DocOfficeItem extends AbsOfficeItem {
 			CharacterRun run = paragraph.getCharacterRun(j);
 
 			if (run.getPicOffset() == 0 || run.getPicOffset() >= 1000) {
-				writePicture();
+				writePicture(builder);
 			} else {
 				try {
 					String text = run.text();
-					if (builder == null) {
-						builder = new StringBuilder();
-					}
-
 					builder.append(text);
 
 					if (text.length() >= 2 && pnumCharacterRuns < 2) {
@@ -202,21 +210,40 @@ public class DocOfficeItem extends AbsOfficeItem {
 			}
 		}
 		
-		if (null != builder) builder.append("\n");
 
 		return builder;
 	}
 
-	private void writePicture() {
-		if (presentPicture >= pictures.size()) return;
+	private void writePicture(StringBuilder builder) {
+		if (pictureIndex >= pictures.size()) return;
 
-		Picture picture = pictures.get(presentPicture);
+		Picture picture = pictures.get(pictureIndex);
 
-		presentPicture++;
+		pictureIndex++;
 
-		//byte[] pictureBytes = picture.getContent();
-		//Bitmap bitmap = BitmapFactory.decodeByteArray(pictureBytes, 0, pictureBytes.length);
+		byte[] pictureBytes = picture.getContent();
+		Bitmap bitmap = BitmapFactory.decodeByteArray(pictureBytes, 0, pictureBytes.length);
 
 
+		Drawable drawable = new BitmapDrawable(MyApplication.getApplication().getResources(), bitmap);
+		drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+
+		if (null == drawables) {
+			drawables = new HashMap<>();
+		}
+
+		drawables.put("image" + pictureIndex, drawable);
+		weakRefDrawable = new WeakReference<Map<String, Drawable>>(drawables);
+
+		if (null == builder) builder = new StringBuilder();
+		builder.append("<img src='image" + pictureIndex + "'>");
+	}
+
+	@Override
+	public void render(TextView textView) {
+		Range range = getRange();
+		StringBuilder builder = readDOC(range);
+		
+		realRender(builder, textView, weakRefDrawable);
 	}
 }
