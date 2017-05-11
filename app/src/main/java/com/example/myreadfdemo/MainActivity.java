@@ -104,6 +104,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 					files.add(new File(FileUtils.APP_PATH + "test_assets.doc"));
 					files.add(new File(FileUtils.APP_PATH + "test_assets.docx"));
 				}
+
+				FileUtils.copySingleAssetsToDst(MainActivity.this, "test_assets3.doc", FileUtils.APP_PATH + "test_assets3.doc");
+				FileUtils.copySingleAssetsToDst(MainActivity.this, "test_assets2.docx", FileUtils.APP_PATH + "test_assets2.docx");
+
+				files.add(new File(FileUtils.APP_PATH + "test_assets3.doc"));
+				files.add(new File(FileUtils.APP_PATH + "test_assets2.docx"));
 				
 				mDatas = new ArrayList<ListItem>();
 				for (File file : files) {
