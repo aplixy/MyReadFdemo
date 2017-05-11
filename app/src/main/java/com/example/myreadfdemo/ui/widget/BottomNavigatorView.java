@@ -19,7 +19,7 @@ public class BottomNavigatorView extends LinearLayoutCompat {
 
     OnBottomNavigatorViewItemClickListener mOnBottomNavigatorViewItemClickListener;
 	
-	private int mExceptIndex = -1;
+	private int mMiddleIndex = -1;
 
     public interface OnBottomNavigatorViewItemClickListener {
         void onBottomNavigatorViewItemClick(int position, View view);
@@ -51,16 +51,33 @@ public class BottomNavigatorView extends LinearLayoutCompat {
         }
     }
     
-    public void setExceptIndex (int exceptIndex) {
-		this.mExceptIndex = exceptIndex;
+    public void setMiddleIndex(int middleIndex) {
+		this.mMiddleIndex = middleIndex;
+
+		for (int i = 0; i < getChildCount(); i++) {
+			View view = getChildAt(i);
+			final int finalI;
+			if (i == middleIndex) finalI = -1;
+			else if (i > middleIndex) finalI = i - 1;
+			else finalI = i;
+			view.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					mOnBottomNavigatorViewItemClickListener.onBottomNavigatorViewItemClick(finalI, v);
+				}
+			});
+		}
 	}
 
     public void select(int position) {
+		if (position == -1) return;
 		
         for (int i = 0; i < getChildCount(); i++) {
-			if (mExceptIndex == i) continue;
+			int index = i;
+			if (i == mMiddleIndex) continue;
+			else if (i > mMiddleIndex) index--;
             View child = getChildAt(i);
-            if (i == position) {
+            if (index == position) {
                 selectChild(child, true);
             } else {
                 selectChild(child, false);

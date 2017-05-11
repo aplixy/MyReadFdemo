@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigatorVi
         mNavigator.onCreate(savedInstanceState);
 
         bottomNavigatorView = (BottomNavigatorView) findViewById(R.id.bottomNavigatorView);
-		bottomNavigatorView.setExceptIndex(2);
+		bottomNavigatorView.setMiddleIndex(2);
         if (bottomNavigatorView != null) {
             bottomNavigatorView.setOnBottomNavigatorViewItemClickListener(this);
         }
@@ -92,11 +92,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigatorVi
 
     @Override
     public void onBottomNavigatorViewItemClick(int position, View view) {
-		if (2 != position) {
-			position = position < 2 ? position : position - 1;
-			setCurrentTab(position);
-		} else {
+		if (position == -1) {
 			Toast.makeText(this, "添加", Toast.LENGTH_SHORT).show();
+		} else {
+			setCurrentTab(position);
 		}
         
     }
