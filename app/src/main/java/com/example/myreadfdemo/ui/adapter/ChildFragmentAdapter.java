@@ -10,7 +10,7 @@ import com.example.myreadfdemo.ui.fragment.MainFragment;
  */
 public class ChildFragmentAdapter implements FragmentNavigatorAdapter {
 
-    public static final String[] TABS = {"Friends", "Groups", "Official"};
+    public static final String[] TABS = {"NormalNote", "TaskNote"};
 
     @Override
     public Fragment onCreateFragment(int position) {
