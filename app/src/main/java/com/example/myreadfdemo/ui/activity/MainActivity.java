@@ -15,10 +15,15 @@ import com.aspsine.fragmentnavigator.FragmentNavigator;
 import com.example.myreadfdemo.Action;
 import com.example.myreadfdemo.R;
 import com.example.myreadfdemo.broadcast.BroadcastManager;
+import com.example.myreadfdemo.database.dao.NoteDao;
+import com.example.myreadfdemo.database.entity.NoteEntity;
 import com.example.myreadfdemo.ui.adapter.FragmentAdapter;
 import com.aspsine.fragmentnavigator.widget.BottomNavigatorView;
 import com.example.myreadfdemo.ui.widget.MidBtnBottomNaviView;
 import com.example.myreadfdemo.utils.SharedPrefUtils;
+import com.xinyu.xylibrary.utils.Logger;
+
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity implements BottomNavigatorView.OnBottomNavigatorViewItemClickListener {
@@ -32,6 +37,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigatorVi
     private MenuItem mLoginMenu;
 
     private MenuItem mLogoutMenu;
+	
+	private NoteDao mNoteDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +57,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigatorVi
         setCurrentTab(mNavigator.getCurrentPosition());
 
         BroadcastManager.register(this, mLoginStatusChangeReceiver, Action.LOGIN, Action.LOGOUT);
+		
+		//addTestData();
+		//queryTestData();
     }
 
     @Override
@@ -158,4 +168,38 @@ public class MainActivity extends AppCompatActivity implements BottomNavigatorVi
             }
         }
     };
+    
+    
+    
+    private void addTestData() {
+		if (null == mNoteDao) mNoteDao = new NoteDao(this);
+
+		NoteEntity noteEntity = new NoteEntity();
+		noteEntity.path = "/storage/emulated/0/aaa.txt";
+		noteEntity.title = "test";
+		
+		long id = mNoteDao.insert(noteEntity);
+
+		Logger.d("insert db id--->" + id);
+		
+	}
+	
+	private void queryTestData() {
+		if (null == mNoteDao) mNoteDao = new NoteDao(this);
+		
+		List<NoteEntity> list = mNoteDao.queryAll();
+		
+		if (null != list && list.size() > 0) {
+			for (NoteEntity noteEntity :
+					list) {
+				if (null != noteEntity) {
+					Logger.i("id--->" + noteEntity.id);
+					Logger.v("path--->" + noteEntity.path);
+					Logger.w("title--->" + noteEntity.title);
+				}
+			}
+			
+			
+		}
+	}
 }
