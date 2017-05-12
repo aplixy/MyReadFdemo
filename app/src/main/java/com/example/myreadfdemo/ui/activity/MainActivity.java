@@ -16,7 +16,8 @@ import com.example.myreadfdemo.Action;
 import com.example.myreadfdemo.R;
 import com.example.myreadfdemo.broadcast.BroadcastManager;
 import com.example.myreadfdemo.ui.adapter.FragmentAdapter;
-import com.example.myreadfdemo.ui.widget.BottomNavigatorView;
+import com.aspsine.fragmentnavigator.widget.BottomNavigatorView;
+import com.example.myreadfdemo.ui.widget.MidBtnBottomNaviView;
 import com.example.myreadfdemo.utils.SharedPrefUtils;
 
 
@@ -26,7 +27,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigatorVi
 
     private FragmentNavigator mNavigator;
 
-    private BottomNavigatorView bottomNavigatorView;
+    private MidBtnBottomNaviView bottomNavigatorView;
 
     private MenuItem mLoginMenu;
 
@@ -41,8 +42,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigatorVi
         mNavigator.setDefaultPosition(DEFAULT_POSITION);
         mNavigator.onCreate(savedInstanceState);
 
-        bottomNavigatorView = (BottomNavigatorView) findViewById(R.id.bottomNavigatorView);
-		bottomNavigatorView.setMiddleIndex(2);
+        bottomNavigatorView = (MidBtnBottomNaviView) findViewById(R.id.bottomNavigatorView);
         if (bottomNavigatorView != null) {
             bottomNavigatorView.setOnBottomNavigatorViewItemClickListener(this);
         }

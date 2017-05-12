@@ -1,4 +1,4 @@
-package com.example.myreadfdemo.ui.widget;
+package com.aspsine.fragmentnavigator.widget;
 
 import android.content.Context;
 import android.graphics.PorterDuff;
@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.example.myreadfdemo.R;
+import com.xinyu.xylibrary.R;
 
 
 /**
@@ -17,9 +17,9 @@ import com.example.myreadfdemo.R;
  */
 public class BottomNavigatorView extends LinearLayoutCompat {
 
-    OnBottomNavigatorViewItemClickListener mOnBottomNavigatorViewItemClickListener;
+    protected OnBottomNavigatorViewItemClickListener mOnBottomNavigatorViewItemClickListener;
 	
-	private int mMiddleIndex = -1;
+	
 
     public interface OnBottomNavigatorViewItemClickListener {
         void onBottomNavigatorViewItemClick(int position, View view);
@@ -51,33 +51,10 @@ public class BottomNavigatorView extends LinearLayoutCompat {
         }
     }
     
-    public void setMiddleIndex(int middleIndex) {
-		this.mMiddleIndex = middleIndex;
-
-		for (int i = 0; i < getChildCount(); i++) {
-			View view = getChildAt(i);
-			final int finalI;
-			if (i == middleIndex) finalI = -1;
-			else if (i > middleIndex) finalI = i - 1;
-			else finalI = i;
-			view.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					mOnBottomNavigatorViewItemClickListener.onBottomNavigatorViewItemClick(finalI, v);
-				}
-			});
-		}
-	}
-
     public void select(int position) {
-		if (position == -1) return;
-		
         for (int i = 0; i < getChildCount(); i++) {
-			int index = i;
-			if (i == mMiddleIndex) continue;
-			else if (i > mMiddleIndex) index--;
             View child = getChildAt(i);
-            if (index == position) {
+            if (i == position) {
                 selectChild(child, true);
             } else {
                 selectChild(child, false);
@@ -85,7 +62,7 @@ public class BottomNavigatorView extends LinearLayoutCompat {
         }
     }
 
-    private void selectChild(View child, boolean select) {
+    protected void selectChild(View child, boolean select) {
         if (child instanceof ViewGroup) {
             ViewGroup group = (ViewGroup) child;
             group.setSelected(select);

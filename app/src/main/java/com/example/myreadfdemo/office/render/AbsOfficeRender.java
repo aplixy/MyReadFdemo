@@ -5,7 +5,7 @@ import android.text.Html;
 import android.text.Spanned;
 import android.widget.TextView;
 
-import com.example.myreadfdemo.utils.Logger;
+import com.xinyu.xylibrary.utils.Logger;
 
 import java.lang.ref.WeakReference;
 import java.util.Map;

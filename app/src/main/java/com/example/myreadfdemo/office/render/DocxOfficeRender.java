@@ -8,7 +8,7 @@ import android.util.Xml;
 import android.widget.TextView;
 
 import com.example.myreadfdemo.MyApplication;
-import com.example.myreadfdemo.utils.Logger;
+import com.xinyu.xylibrary.utils.Logger;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;

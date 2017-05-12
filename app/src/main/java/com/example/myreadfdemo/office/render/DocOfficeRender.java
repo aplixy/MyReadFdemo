@@ -7,7 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.widget.TextView;
 
 import com.example.myreadfdemo.MyApplication;
-import com.example.myreadfdemo.utils.Logger;
+import com.xinyu.xylibrary.utils.Logger;
 
 import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.usermodel.CharacterRun;
