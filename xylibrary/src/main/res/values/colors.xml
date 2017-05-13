@@ -3,4 +3,8 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorTabNormal">#666666</color>
     <color name="colorTabSelected">@color/colorPrimary</color>
+
+
+    <color name="black_transparency">#80000000</color>
+    <color name="transparent">#00000000</color>
 </resources>

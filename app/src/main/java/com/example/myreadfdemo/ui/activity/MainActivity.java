@@ -9,16 +9,16 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.aspsine.fragmentnavigator.FragmentNavigator;
+import com.aspsine.fragmentnavigator.widget.BottomNavigatorView;
 import com.example.myreadfdemo.Action;
 import com.example.myreadfdemo.R;
 import com.example.myreadfdemo.broadcast.BroadcastManager;
 import com.example.myreadfdemo.database.dao.NoteDao;
 import com.example.myreadfdemo.database.entity.NoteEntity;
 import com.example.myreadfdemo.ui.adapter.FragmentAdapter;
-import com.aspsine.fragmentnavigator.widget.BottomNavigatorView;
+import com.example.myreadfdemo.ui.widget.MainAddPopupWindow;
 import com.example.myreadfdemo.ui.widget.MidBtnBottomNaviView;
 import com.example.myreadfdemo.utils.SharedPrefUtils;
 import com.xinyu.xylibrary.utils.Logger;
@@ -39,6 +39,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigatorVi
     private MenuItem mLogoutMenu;
 	
 	private NoteDao mNoteDao;
+	
+	private MainAddPopupWindow mAddPopup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +62,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigatorVi
 		
 		//addTestData();
 		//queryTestData();
+
+		mAddPopup = new MainAddPopupWindow(this);
+
+		
     }
 
     @Override
@@ -103,7 +109,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigatorVi
     @Override
     public void onBottomNavigatorViewItemClick(int position, View view) {
 		if (position == -1) {
-			Toast.makeText(this, "添加", Toast.LENGTH_SHORT).show();
+			//Toast.makeText(this, "添加", Toast.LENGTH_SHORT).show();
+			
+			mAddPopup.show(view);
 		} else {
 			setCurrentTab(position);
 		}
