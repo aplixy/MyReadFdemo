@@ -214,4 +214,9 @@ public class FragmentNavigator {
             this.mCurrentPosition = defaultPosition;
         }
     }
+    
+    public void setAdapter(FragmentNavigatorAdapter adapter) {
+		this.mAdapter = adapter;
+		resetFragments();
+	}
 }
