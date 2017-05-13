@@ -4,16 +4,27 @@
               android:layout_width="wrap_content"
               android:id="@+id/main_popup_add_root"
               android:gravity="center"
+              android:padding="10dp"
               android:layout_height="wrap_content">
     
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="180dp"
         android:layout_height="wrap_content"
-        android:text="note"/>
+        android:drawableLeft="@drawable/add_note"
+        android:drawablePadding="-20dp"
+        android:textSize="16sp"
+        android:textColor="@color/colorButtonStroke"
+        android:background="@drawable/shape_main_add_btn"
+        android:text="新增笔记"/>
     
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="180dp"
         android:layout_height="wrap_content"
-        android:text="office"/>
+        android:drawableLeft="@drawable/add_office"
+        android:textSize="16sp"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/colorButtonStroke"
+        android:background="@drawable/shape_main_add_btn"
+        android:text="导入Office文档"/>
 
 </LinearLayout>

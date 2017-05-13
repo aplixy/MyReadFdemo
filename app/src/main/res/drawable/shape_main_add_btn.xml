@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <gradient android:startColor="@android:color/white"
+              android:endColor="@android:color/white" />
+    
+    <!-- 圆角 -->
+    <corners
+        android:radius="9dp"
+        /><!-- 设置圆角半径 -->
+
+
+    <!-- 间隔 -->
+    <padding
+        android:left="10dp"
+        android:top="7dp"
+        android:right="10dp"
+        android:bottom="7dp"/><!-- 各方向的间隔 -->
+
+    
+    <!-- 填充 -->
+    <solid
+        android:color="@color/selector_main_btn_add"/><!-- 填充的颜色 -->
+
+    <!-- 描边 -->
+    <stroke
+        android:width="1dp"
+        android:color="@color/colorButtonStroke"
+        android:dashWidth="0dp"
+        android:dashGap="0dp"/>
+
+</shape>

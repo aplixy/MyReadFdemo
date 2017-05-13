@@ -6,6 +6,7 @@
 
     <color name="colorTabSelected">@color/colorPrimary</color>
 
-    
+    <color name="colorButtonStroke">#666666</color>
+    <color name="colorButtonPressed">#CCCCCC</color>
     
 </resources>
