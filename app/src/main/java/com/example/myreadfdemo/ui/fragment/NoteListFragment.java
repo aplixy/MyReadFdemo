@@ -49,6 +49,7 @@ public class NoteListFragment extends BaseFragment {
 	private RefreshListReceiver mRefreshReceiver;
 	
 	private SwipeRefreshLayout mSwipeRefreshLayout;
+	private TextView mTvEmpty;
 
 	public static Fragment newInstance() {
 		NoteListFragment fragment = new NoteListFragment();
@@ -76,6 +77,7 @@ public class NoteListFragment extends BaseFragment {
 		mRecyclerView = (RecyclerView) view.findViewById(R.id.fragment_note_list_recyclerview);
 		mProgressBar = (ProgressBar) view.findViewById(R.id.fragment_note_list_progressbar);
 		mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.fragment_note_list_swiperefreshlayout);
+		mTvEmpty = (TextView) view.findViewById(R.id.fragment_note_list_textview_empty);
 	}
 
 	@Override
@@ -92,6 +94,7 @@ public class NoteListFragment extends BaseFragment {
 
 		mRefreshReceiver = new RefreshListReceiver();
 		BroadcastManager.register(mActivity, mRefreshReceiver, Action.REFRESH_NOTE_LIST);
+
 	}
 
 	@Override
@@ -109,10 +112,19 @@ public class NoteListFragment extends BaseFragment {
 				loadData();
 			}
 		});
+
+		mTvEmpty.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				loadData();
+			}
+		});
 	}
 
 	// =================================
 
+
+	
 
 	@Override
 	protected void firstLoadData() {
@@ -126,12 +138,17 @@ public class NoteListFragment extends BaseFragment {
 			mDatas.clear();
 			mDatas.addAll(mDbData);
 		}
-
+		
 		mRecyclerAdapter.notifyDataSetChanged();
+
+		if (mDatas == null || mDatas.size() == 0) {
+			mTvEmpty.setVisibility(View.VISIBLE);
+		}
 	}
 
 	@Override
 	protected void showProgressBar(boolean show) {
+		mTvEmpty.setVisibility(View.GONE);
 		mProgressBar.setVisibility(show ? View.VISIBLE : View.GONE);
 	}
 

@@ -23,5 +23,16 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:visibility="gone"/>
+    
+    <TextView
+        android:id="@+id/fragment_note_list_textview_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textColor="#CCCCCC"
+        android:textStyle="italic"
+        android:textSize="20sp"
+        android:visibility="gone"
+        android:text="没有笔记，点'加号'新增一条数据"/>
 
 </FrameLayout>
