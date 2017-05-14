@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.example.myreadfdemo.R;
 import com.example.myreadfdemo.database.dao.NoteDao;
 import com.example.myreadfdemo.database.entity.NoteEntity;
-import com.example.myreadfdemo.ui.bean.NoteListBean;
+import com.example.myreadfdemo.ui.activity.EditNoteActivity;
 import com.xinyu.xylibrary.ui.fragment.BaseFragment;
 import com.xinyu.xylibrary.ui.widget.EndlessRecyclerOnScrollListener;
 import com.xinyu.xylibrary.ui.widget.RecycleViewDivider;
@@ -34,7 +34,7 @@ public class NoteListFragment extends BaseFragment {
 	
 	private ProgressBar mProgressBar;
 	
-	private List<NoteListBean> mDatas = new ArrayList<>();
+	private List<NoteEntity> mDatas = new ArrayList<>();
 	private List<NoteEntity> mDbData;
 	
 	private NoteDao mDao;
@@ -100,16 +100,7 @@ public class NoteListFragment extends BaseFragment {
 	@Override
 	protected void bindData() {
 		if (null != mDbData) {
-			for (NoteEntity entity : mDbData) {
-				if (null == entity) continue;
-				
-				NoteListBean bean = new NoteListBean();
-				bean.title = entity.title;
-				bean.date = DateUtils.yyyymmddFormat(entity.modifyAt);
-				bean.summary = entity.summary;
-				
-				mDatas.add(bean);
-			}
+			mDatas.addAll(mDbData);
 		}
 
 		mRecyclerAdapter.notifyDataSetChanged();
@@ -121,7 +112,7 @@ public class NoteListFragment extends BaseFragment {
 	}
 
 
-	class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder> {
+	class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder> implements View.OnClickListener {
 
 		@Override
 		public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -133,12 +124,14 @@ public class NoteListFragment extends BaseFragment {
 
 		@Override
 		public void onBindViewHolder(MyViewHolder holder, int position) {
-			NoteListBean bean = mDatas.get(position);
-			if (null == bean) return;
+			NoteEntity entity = mDatas.get(position);
+			if (null == entity) return;
 			
-			holder.tvTitle.setText(bean.title);
-			holder.tvDate.setText(bean.date);
-			holder.tvSummary.setText(bean.summary);
+			holder.tvTitle.setText(entity.title);
+			holder.tvDate.setText(DateUtils.yyyymmddFormat(entity.modifyAt));
+			holder.tvSummary.setText(entity.summary);
+			
+			holder.rootView.setTag(position);
 		}
 
 		@Override
@@ -146,7 +139,24 @@ public class NoteListFragment extends BaseFragment {
 			return mDatas.size();
 		}
 
+		@Override
+		public void onClick(View v) {
+			int id = v.getId();
+			
+			if (id == R.id.item_note_root) {
+				int position = (int) v.getTag();
+				
+				NoteEntity entity = mDatas.get(position);
+				long noteId = entity == null ? 0 :entity.id;
+				
+
+				EditNoteActivity.start(mActivity, entity.title, noteId);
+			}
+		}
+
 		class MyViewHolder extends RecyclerView.ViewHolder {
+			View rootView;
+			
 			TextView tvTitle;
 			//ImageView ivPreview;
 			TextView tvDate;
@@ -154,10 +164,13 @@ public class NoteListFragment extends BaseFragment {
 
 			public MyViewHolder(View view) {
 				super(view);
+				rootView = view.findViewById(R.id.item_note_root);
 				tvTitle = (TextView) view.findViewById(R.id.item_note_tv_title);
 				//ivPreview = (ImageView) view.findViewById(R.id.item_note_iv_preview);
 				tvDate = (TextView) view.findViewById(R.id.item_note_tv_date);
 				tvSummary = (TextView) view.findViewById(R.id.item_note_tv_summary);
+
+				rootView.setOnClickListener(RecyclerAdapter.this);
 			}
 		}
 	}

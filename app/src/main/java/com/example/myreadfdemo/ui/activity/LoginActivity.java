@@ -9,7 +9,7 @@ import android.widget.EditText;
 
 import com.example.myreadfdemo.R;
 import com.example.myreadfdemo.broadcast.BroadcastManager;
-import com.example.myreadfdemo.utils.SharedPrefUtils;
+import com.xinyu.xylibrary.utils.SharedPrefUtils;
 
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener{

@@ -1,5 +1,6 @@
 package com.example.myreadfdemo.ui.activity;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -20,8 +21,10 @@ import com.example.myreadfdemo.database.entity.NoteEntity;
 import com.example.myreadfdemo.ui.adapter.FragmentAdapter;
 import com.example.myreadfdemo.ui.widget.MainAddPopupWindow;
 import com.example.myreadfdemo.ui.widget.MidBtnBottomNaviView;
-import com.example.myreadfdemo.utils.SharedPrefUtils;
 import com.xinyu.xylibrary.utils.Logger;
+import com.xinyu.xylibrary.utils.SharedPrefUtils;
+import com.yxp.permission.util.lib.PermissionUtil;
+import com.yxp.permission.util.lib.callback.PermissionResultCallBack;
 
 import java.util.List;
 
@@ -46,6 +49,30 @@ public class MainActivity extends AppCompatActivity implements BottomNavigatorVi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+		PermissionUtil.getInstance().request(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+				new PermissionResultCallBack() {
+					@Override
+					public void onPermissionGranted() {
+						// 当所有权限的申请被用户同意之后,该方法会被调用
+						
+					}
+
+					@Override
+					public void onPermissionGranted(String... strings) {
+						// 返回此次申请中通过的权限列表
+					}
+
+					@Override
+					public void onPermissionDenied(String... permissions) {
+						// 当权限申请中的某一个或多个权限,被用户曾经否定了,并确认了不再提醒时,也就是权限的申请窗口不能再弹出时,该方法将会被调用
+					}
+
+					@Override
+					public void onRationalShow(String... permissions) {
+						// 当权限申请中的某一个或多个权限,被用户否定了,但没有确认不再提醒时,也就是权限窗口申请时,但被否定了之后,该方法将会被调用.
+					}
+				});
 
         mNavigator = new FragmentNavigator(getSupportFragmentManager(), new FragmentAdapter(), R.id.container);
         mNavigator.setDefaultPosition(DEFAULT_POSITION);

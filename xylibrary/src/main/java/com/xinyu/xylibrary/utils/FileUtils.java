@@ -5,10 +5,13 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -202,4 +205,82 @@ public class FileUtils {
 	public interface FileResultListener {
 		void onResult(List<File> files);
 	}
+
+
+	public static void saveFile(String destFileName, String str) {
+		if (destFileName == null || destFileName.length() == 0) {
+			destFileName = "temp.txt";
+		}
+		
+		String filePath = destFileName;
+//		boolean hasSDCard = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
+//		if (hasSDCard) { // SD卡根目录的hello.text  
+//			filePath = Environment.getExternalStorageDirectory().toString() + File.separator + destFileName;
+//		} else { // 系统下载缓存根目录的hello.text  
+//			filePath = Environment.getDownloadCacheDirectory().toString() + File.separator + destFileName;
+//		}
+		File file = new File(filePath);
+		FileOutputStream outStream = null;
+		try {
+			if (!file.exists()) {
+				File dir = new File(file.getParent());
+				dir.mkdirs();
+				//Logger.d("file.mkdirs()--->" + file.mkdirs());
+				if (!file.createNewFile()) {
+					file.delete();
+					file.createNewFile();
+				}
+			}
+
+			outStream = new FileOutputStream(file);
+			outStream.write(str.getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (null != outStream) outStream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public static String readFileByLines(String fileName) {
+		FileInputStream file = null;
+		BufferedReader reader = null;
+		InputStreamReader inputFileReader = null;
+		StringBuilder content = new StringBuilder();
+		String tempString = null;
+		try {
+			file = new FileInputStream(fileName);
+			inputFileReader = new InputStreamReader(file, "utf-8");
+			reader = new BufferedReader(inputFileReader);
+			// 一次读入一行，直到读入null为文件结束
+			while ((tempString = reader.readLine()) != null) {
+				content.append(tempString);
+			}
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			if (inputFileReader != null) {
+				try {
+					inputFileReader.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			if (reader != null) {
+				try {
+					reader.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return content.toString();
+	}
+
 }

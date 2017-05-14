@@ -139,7 +139,10 @@ public class NoteProvider extends BaseContentProvider {
 		Uri retUri = null;
 		ContentValues initValues = values != null ? new ContentValues(values) : new ContentValues();
 		
-		initValues.put(AppBaseColumns.CREATE_AT, System.currentTimeMillis());
+		long currentMillis = System.currentTimeMillis();
+		
+		initValues.put(AppBaseColumns.CREATE_AT, currentMillis);
+		initValues.put(AppBaseColumns.MODIFIED_AT, currentMillis);
 		
 		long rowId = db.insert(tableName, null, initValues);
 		if (rowId > 0) {

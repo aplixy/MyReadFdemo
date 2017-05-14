@@ -1,4 +1,4 @@
-package com.example.myreadfdemo.utils;
+package com.xinyu.xylibrary.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;

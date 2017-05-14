@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.example.myreadfdemo.R;
-import com.example.myreadfdemo.utils.SharedPrefUtils;
+import com.xinyu.xylibrary.utils.SharedPrefUtils;
 
 import java.lang.ref.WeakReference;
 

@@ -119,6 +119,10 @@ public abstract class BaseFragment extends Fragment {
 		
 	}
 
+	protected  <E extends View> E findViewById(int resId) {
+		return (E) mView.findViewById(resId);
+	}
+
 	/**
 	 * 发送后台操作
 	 *
