@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:padding="10dp"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/item_note_iv_icon_left"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/note_list_item"/>
+    
+    <TextView
+        android:id="@+id/item_note_tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/item_note_iv_icon_left"
+        android:layout_toLeftOf="@+id/item_note_iv_preview"
+        android:layout_marginLeft="10dp"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:textSize="18sp"
+        android:text="This is title"/>
+    
+    <TextView
+        android:id="@+id/item_note_tv_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:layout_alignLeft="@+id/item_note_tv_title"
+        android:layout_below="@+id/item_note_tv_title"
+        android:layout_marginTop="7dp"
+        android:textColor="#cccccc"
+        android:textSize="15sp"
+        android:text="2017-05-14"/>
+    
+    <TextView
+        android:id="@+id/item_note_tv_summary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:layout_toRightOf="@+id/item_note_tv_date"
+        android:layout_alignTop="@+id/item_note_tv_date"
+        android:layout_toLeftOf="@+id/item_note_iv_preview"
+        android:layout_marginLeft="10dp"
+        android:textColor="#cccccc"
+        android:textSize="15sp"
+        android:text="This is summary info."/>
+    
+    <ImageView
+        android:id="@+id/item_note_iv_preview"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginLeft="10dp"
+        android:src="@drawable/ic_launcher"
+        android:visibility="gone"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"/>
+    
+</RelativeLayout>

@@ -17,7 +17,7 @@ public class ShareFragNaviAdapter implements FragmentNavigatorAdapter {
     @Override
     public Fragment onCreateFragment(int position) {
 		if (position == 0) {
-			return NoteListFragment.newInstance("share");
+			return NoteListFragment.newInstance();
 		} else {
 			return TaskListFragment.newInstance("share");
 		}

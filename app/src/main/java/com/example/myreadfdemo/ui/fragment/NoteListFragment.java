@@ -1,11 +1,9 @@
 package com.example.myreadfdemo.ui.fragment;
 
 
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,124 +11,154 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.myreadfdemo.R;
-import com.example.myreadfdemo.utils.SharedPrefUtils;
+import com.example.myreadfdemo.database.dao.NoteDao;
+import com.example.myreadfdemo.database.entity.NoteEntity;
+import com.example.myreadfdemo.ui.bean.NoteListBean;
+import com.xinyu.xylibrary.ui.fragment.BaseFragment;
+import com.xinyu.xylibrary.ui.widget.EndlessRecyclerOnScrollListener;
+import com.xinyu.xylibrary.ui.widget.RecycleViewDivider;
+import com.xinyu.xylibrary.utils.DateUtils;
 
-import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class NoteListFragment extends Fragment {
+public class NoteListFragment extends BaseFragment {
 
-    public static final String TAG = NoteListFragment.class.getSimpleName();
+	public static final String TAG = NoteListFragment.class.getSimpleName();
+
+	private RecyclerView mRecyclerView;
+	private RecyclerAdapter mRecyclerAdapter;
 	
-	public static final String TYPE_RECENT = "recent";
-	public static final String TYPE_SHARE = "share";
+	private ProgressBar mProgressBar;
+	
+	private List<NoteListBean> mDatas = new ArrayList<>();
+	private List<NoteEntity> mDbData;
+	
+	private NoteDao mDao;
 
-    public static final String EXTRA_TEXT = "extra_text";
+	public static Fragment newInstance() {
+		NoteListFragment fragment = new NoteListFragment();
+		return fragment;
+	}
 
-    private static final int MOCK_LOAD_DATA_DELAYED_TIME = 2000;
+	public NoteListFragment() {
+		// Required empty public constructor
+	}
 
-    private static Handler sHandler = new Handler(Looper.getMainLooper());
+	// ==================================
 
-    private WeakRunnable mRunnable = new WeakRunnable(this);
+	@Override
+	protected int getLayoutRes() {
+		return R.layout.fragment_main;
+	}
 
-    private String mText;
+	@Override
+	protected void getArgs() {
 
-    private TextView tvText;
+	}
 
-    private ProgressBar progressBar;
+	@Override
+	protected void findViews(View view) {
+		mRecyclerView = (RecyclerView) view.findViewById(R.id.fragment_note_list_recyclerview);
+		mProgressBar = (ProgressBar) view.findViewById(R.id.fragment_note_list_progressbar);
+	}
 
-    public static Fragment newInstance(String text) {
-        NoteListFragment fragment = new NoteListFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(EXTRA_TEXT, text);
-        fragment.setArguments(bundle);
-        return fragment;
-    }
+	@Override
+	protected void initWidget() {
+		//设置布局管理器
+		LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+		linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+		mRecyclerView.setLayoutManager(linearLayoutManager);
+		mRecyclerAdapter = new RecyclerAdapter();
+		mRecyclerView.addItemDecoration(new RecycleViewDivider(getContext(), LinearLayoutManager.VERTICAL));
+		mRecyclerView.setAdapter(mRecyclerAdapter);
 
-    public NoteListFragment() {
-        // Required empty public constructor
-    }
+		mDao = new NoteDao(mActivity);
+	}
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mText = getArguments().getString(EXTRA_TEXT);
-    }
+	@Override
+	protected void setListener() {
+		mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener((LinearLayoutManager) mRecyclerView.getLayoutManager()) {
+			@Override
+			public void onLoadMore(int currentPage) {
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-							 Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_main, container, false);
-    }
+			}
+		});
+	}
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        tvText = (TextView) view.findViewById(R.id.tvText);
-        progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
-    }
+	// =================================
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        if (savedInstanceState == null) {
-            loadData();
-        } else {
-            mText = savedInstanceState.getString(EXTRA_TEXT);
-            bindData();
-        }
-    }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString(EXTRA_TEXT, mText);
-    }
+	@Override
+	protected void firstLoadData() {
+		mDbData = mDao.queryAll();
+	}
 
-    @Override
-    public void onDestroyView() {
-        sHandler.removeCallbacks(mRunnable);
-        tvText = null;
-        progressBar = null;
-        super.onDestroyView();
-    }
+	@Override
+	protected void bindData() {
+		if (null != mDbData) {
+			for (NoteEntity entity : mDbData) {
+				if (null == entity) continue;
+				
+				NoteListBean bean = new NoteListBean();
+				bean.title = entity.title;
+				bean.date = DateUtils.yyyymmddFormat(entity.modifyAt);
+				bean.summary = entity.summary;
+				
+				mDatas.add(bean);
+			}
+		}
 
-    private void showProgressBar(boolean show) {
-        progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
-    }
+		mRecyclerAdapter.notifyDataSetChanged();
+	}
 
-    private void bindData() {
-        boolean isLogin = SharedPrefUtils.isLogin(getActivity());
-        tvText.setText(mText + "\n" + "Login:" + isLogin);
-    }
+	@Override
+	protected void showProgressBar(boolean show) {
+		mProgressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+	}
 
-    /**
-     * mock load data
-     */
-    private void loadData() {
-        showProgressBar(true);
-        sHandler.postDelayed(mRunnable, 0);
-    }
 
-    private static class WeakRunnable implements Runnable {
+	class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder> {
 
-        WeakReference<NoteListFragment> mMainFragmentReference;
+		@Override
+		public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+			MyViewHolder holder = new MyViewHolder(LayoutInflater.from(
+					mActivity).inflate(R.layout.item_note_list, parent,
+					false));
+			return holder;
+		}
 
-        public WeakRunnable(NoteListFragment mainFragment) {
-            this.mMainFragmentReference = new WeakReference<NoteListFragment>(mainFragment);
-        }
+		@Override
+		public void onBindViewHolder(MyViewHolder holder, int position) {
+			NoteListBean bean = mDatas.get(position);
+			if (null == bean) return;
+			
+			holder.tvTitle.setText(bean.title);
+			holder.tvDate.setText(bean.date);
+			holder.tvSummary.setText(bean.summary);
+		}
 
-        @Override
-        public void run() {
+		@Override
+		public int getItemCount() {
+			return mDatas.size();
+		}
 
-			NoteListFragment mainFragment = mMainFragmentReference.get();
-            if (mainFragment != null && !mainFragment.isDetached()) {
-                mainFragment.showProgressBar(false);
-                mainFragment.bindData();
-            }
-        }
-    }
+		class MyViewHolder extends RecyclerView.ViewHolder {
+			TextView tvTitle;
+			//ImageView ivPreview;
+			TextView tvDate;
+			TextView tvSummary;
+
+			public MyViewHolder(View view) {
+				super(view);
+				tvTitle = (TextView) view.findViewById(R.id.item_note_tv_title);
+				//ivPreview = (ImageView) view.findViewById(R.id.item_note_iv_preview);
+				tvDate = (TextView) view.findViewById(R.id.item_note_tv_date);
+				tvSummary = (TextView) view.findViewById(R.id.item_note_tv_summary);
+			}
+		}
+	}
 }

@@ -1,4 +1,4 @@
-package com.xinyu.xylibrary.widget;/*
+package com.xinyu.xylibrary.ui.widget;/*
  * Copyright (C) 2014 darnmason
  *
  * Licensed under the Apache License, Version 2.0 (the "License");

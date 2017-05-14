@@ -1,4 +1,4 @@
-package com.xinyu.xylibrary.widget;
+package com.xinyu.xylibrary.ui.widget;
 
 import android.app.Activity;
 import android.content.Context;

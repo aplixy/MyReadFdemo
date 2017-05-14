@@ -17,7 +17,7 @@ public class RecentFragNaviAdapter implements FragmentNavigatorAdapter {
     @Override
     public Fragment onCreateFragment(int position) {
         if (position == 0) {
-			return NoteListFragment.newInstance("recent");
+			return NoteListFragment.newInstance();
 		} else {
 			return TaskListFragment.newInstance("recent");
 		}

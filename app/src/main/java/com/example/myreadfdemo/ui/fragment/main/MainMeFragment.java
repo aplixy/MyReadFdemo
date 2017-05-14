@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.example.myreadfdemo.R;
 import com.example.myreadfdemo.utils.SharedPrefUtils;
@@ -34,7 +33,7 @@ public class MainMeFragment extends Fragment {
 
     private String mText;
 
-    private TextView tvText;
+    //private TextView tvText;
 
     private ProgressBar progressBar;
 
@@ -66,8 +65,8 @@ public class MainMeFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        tvText = (TextView) view.findViewById(R.id.tvText);
-        progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
+        //tvText = (TextView) view.findViewById(R.id.tvText);
+        progressBar = (ProgressBar) view.findViewById(R.id.fragment_note_list_progressbar);
     }
 
     @Override
@@ -90,7 +89,7 @@ public class MainMeFragment extends Fragment {
     @Override
     public void onDestroyView() {
         sHandler.removeCallbacks(mRunnable);
-        tvText = null;
+        //tvText = null;
         progressBar = null;
         super.onDestroyView();
     }
@@ -101,11 +100,11 @@ public class MainMeFragment extends Fragment {
 
     private void bindData() {
         boolean isLogin = SharedPrefUtils.isLogin(getActivity());
-        tvText.setText(mText + "\n" + "Login:" + isLogin);
+        //tvText.setText(mText + "\n" + "Login:" + isLogin);
     }
 
     /**
-     * mock load data
+     * mock load date
      */
     private void loadData() {
         showProgressBar(true);
