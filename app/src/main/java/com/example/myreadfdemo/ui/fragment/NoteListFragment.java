@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -46,6 +47,8 @@ public class NoteListFragment extends BaseFragment {
 	private NoteDao mDao;
 	
 	private RefreshListReceiver mRefreshReceiver;
+	
+	private SwipeRefreshLayout mSwipeRefreshLayout;
 
 	public static Fragment newInstance() {
 		NoteListFragment fragment = new NoteListFragment();
@@ -72,13 +75,14 @@ public class NoteListFragment extends BaseFragment {
 	protected void findViews(View view) {
 		mRecyclerView = (RecyclerView) view.findViewById(R.id.fragment_note_list_recyclerview);
 		mProgressBar = (ProgressBar) view.findViewById(R.id.fragment_note_list_progressbar);
+		mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.fragment_note_list_swiperefreshlayout);
 	}
 
 	@Override
 	protected void initWidget() {
 		//设置布局管理器
 		LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-		linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+		linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 		mRecyclerView.setLayoutManager(linearLayoutManager);
 		mRecyclerAdapter = new RecyclerAdapter();
 		mRecyclerView.addItemDecoration(new RecycleViewDivider(getContext(), LinearLayoutManager.VERTICAL));
@@ -98,6 +102,13 @@ public class NoteListFragment extends BaseFragment {
 
 			}
 		});
+
+		mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+			@Override
+			public void onRefresh() {
+				loadData();
+			}
+		});
 	}
 
 	// =================================
@@ -105,13 +116,12 @@ public class NoteListFragment extends BaseFragment {
 
 	@Override
 	protected void firstLoadData() {
-		Logger.d("firstLoadData");
 		mDbData = mDao.queryAll();
 	}
 
 	@Override
 	protected void bindData() {
-		Logger.w("bindData--->" + mDbData);
+		mSwipeRefreshLayout.setRefreshing(false);
 		if (null != mDbData) {
 			mDatas.clear();
 			mDatas.addAll(mDbData);

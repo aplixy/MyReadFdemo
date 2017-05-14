@@ -9,9 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.PopupWindow;
 
 import com.example.myreadfdemo.R;
+import com.example.myreadfdemo.ui.activity.EditNoteActivity;
 
 /**
  * Created by lixinyu on 2017/5/12.
@@ -35,6 +37,8 @@ public class MainAddPopupWindow extends PopupWindow implements Animation.Animati
 	private int popupWidth;
 	private int popupHeight;
 
+	private Button mBtnNewNote;
+	private Button mBtnLeadInto;
 
 	public MainAddPopupWindow(Context context) {
 		initView(context);
@@ -51,6 +55,9 @@ public class MainAddPopupWindow extends PopupWindow implements Animation.Animati
 
 	private void findViews() {
 		mRootView = (ViewGroup) LayoutInflater.from(mContext).inflate(R.layout.popup_add, null);
+		mBtnNewNote = findViewById(R.id.main_popup_add_btn_new);
+		mBtnLeadInto = findViewById(R.id.main_popup_add_btn_lead);
+		
 	}
 
 	private void init() {
@@ -72,6 +79,8 @@ public class MainAddPopupWindow extends PopupWindow implements Animation.Animati
 	private void setListener() {
 		mOutAnim.setAnimationListener(this);
 		mRootView.setOnClickListener(this);
+		mBtnNewNote.setOnClickListener(this);
+		mBtnLeadInto.setOnClickListener(this);
 		super.setOnDismissListener(this);
 	}
 
@@ -98,9 +107,25 @@ public class MainAddPopupWindow extends PopupWindow implements Animation.Animati
 	@Override
 	public void onClick(View v) {
 		int i = v.getId();
-		if (i == R.id.common_popup_layout_root) {
-			if (mIsClickBgDismiss) dismiss();
+		switch (v.getId()) {
+			case R.id.common_popup_layout_root: {
+				if (mIsClickBgDismiss) dismiss();
+				break;
+			}
+			case R.id.main_popup_add_btn_new: {
+				EditNoteActivity.start(mContext, null, 0);
+				dismiss();
+				break;
+			}
+			case R.id.main_popup_add_btn_lead: {
+				
+				break;
+			}
+			default: {
+				break;
+			}
 		}
+		
 	}
 
 	// 面板动画收回动画

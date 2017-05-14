@@ -66,7 +66,7 @@ public class NoteDao extends BaseDao<NoteEntity> {
 
 	@Override
 	public List<NoteEntity> queryAll() {
-		return queryAll(0);
+		return mOperator.query(null, null, NoteTable.MODIFIED_AT + " DESC");
 	}
 
 	@Override
