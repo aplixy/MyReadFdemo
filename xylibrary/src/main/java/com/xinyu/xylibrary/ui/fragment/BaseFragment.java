@@ -137,7 +137,7 @@ public abstract class BaseFragment extends Fragment {
 	/**
 	 * mock load data
 	 */
-	private void loadData() {
+	protected void loadData() {
 		showProgressBar(true);
 		mBackgroundHandler.post(mRunnable);
 	}

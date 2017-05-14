@@ -38,4 +38,9 @@ public class BroadcastManager {
         intent.putExtra("EXTRA_POSITION", position);
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
+
+	public static void sendRefreshNoteListBroadcast(Context context){
+		Intent intent = new Intent(Action.REFRESH_NOTE_LIST);
+		LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+	}
 }

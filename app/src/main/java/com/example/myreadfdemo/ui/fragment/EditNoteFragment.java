@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.example.myreadfdemo.R;
+import com.example.myreadfdemo.broadcast.BroadcastManager;
 import com.example.myreadfdemo.utils.NoteSaveHelper;
 import com.xinyu.xylibrary.ui.fragment.BaseFragment;
 
@@ -90,9 +91,12 @@ public class EditNoteFragment extends BaseFragment {
 	public void onStop() {
 		super.onStop();
 		save();
+
+		BroadcastManager.sendRefreshNoteListBroadcast(mActivity);
 	}
 	
 	private void save() {
 		NoteSaveHelper.getInstance().saveNote(mId, mEtTitle.getText().toString(), mEtContent.getText().toString());
 	}
+	
 }

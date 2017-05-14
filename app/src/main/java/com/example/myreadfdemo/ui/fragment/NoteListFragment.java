@@ -1,6 +1,9 @@
 package com.example.myreadfdemo.ui.fragment;
 
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,7 +13,9 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.myreadfdemo.Action;
 import com.example.myreadfdemo.R;
+import com.example.myreadfdemo.broadcast.BroadcastManager;
 import com.example.myreadfdemo.database.dao.NoteDao;
 import com.example.myreadfdemo.database.entity.NoteEntity;
 import com.example.myreadfdemo.ui.activity.EditNoteActivity;
@@ -18,6 +23,7 @@ import com.xinyu.xylibrary.ui.fragment.BaseFragment;
 import com.xinyu.xylibrary.ui.widget.EndlessRecyclerOnScrollListener;
 import com.xinyu.xylibrary.ui.widget.RecycleViewDivider;
 import com.xinyu.xylibrary.utils.DateUtils;
+import com.xinyu.xylibrary.utils.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +44,8 @@ public class NoteListFragment extends BaseFragment {
 	private List<NoteEntity> mDbData;
 	
 	private NoteDao mDao;
+	
+	private RefreshListReceiver mRefreshReceiver;
 
 	public static Fragment newInstance() {
 		NoteListFragment fragment = new NoteListFragment();
@@ -77,6 +85,9 @@ public class NoteListFragment extends BaseFragment {
 		mRecyclerView.setAdapter(mRecyclerAdapter);
 
 		mDao = new NoteDao(mActivity);
+
+		mRefreshReceiver = new RefreshListReceiver();
+		BroadcastManager.register(mActivity, mRefreshReceiver, Action.REFRESH_NOTE_LIST);
 	}
 
 	@Override
@@ -94,12 +105,15 @@ public class NoteListFragment extends BaseFragment {
 
 	@Override
 	protected void firstLoadData() {
+		Logger.d("firstLoadData");
 		mDbData = mDao.queryAll();
 	}
 
 	@Override
 	protected void bindData() {
+		Logger.w("bindData--->" + mDbData);
 		if (null != mDbData) {
+			mDatas.clear();
 			mDatas.addAll(mDbData);
 		}
 
@@ -111,6 +125,11 @@ public class NoteListFragment extends BaseFragment {
 		mProgressBar.setVisibility(show ? View.VISIBLE : View.GONE);
 	}
 
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		if (null != mRefreshReceiver) BroadcastManager.unregister(mActivity, mRefreshReceiver);
+	}
 
 	class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder> implements View.OnClickListener {
 
@@ -172,6 +191,14 @@ public class NoteListFragment extends BaseFragment {
 
 				rootView.setOnClickListener(RecyclerAdapter.this);
 			}
+		}
+	}
+	
+	private class RefreshListReceiver extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			Logger.i("onReceive");
+			loadData();
 		}
 	}
 }
