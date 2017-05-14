@@ -12,9 +12,23 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ListView
-            android:id="@+id/main_listview"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent">
+
+            <ListView
+                android:id="@+id/main_listview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+            <TextView
+                android:id="@+id/main_error_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textStyle="italic"
+                android:textSize="20sp"
+                android:textColor="#cccccc"
+                android:text="正在加载..."/>
+        </FrameLayout>
     </android.support.v4.widget.SwipeRefreshLayout>
 </FrameLayout>

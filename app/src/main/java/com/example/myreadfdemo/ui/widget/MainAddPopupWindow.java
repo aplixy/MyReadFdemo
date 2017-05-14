@@ -2,6 +2,7 @@ package com.example.myreadfdemo.ui.widget;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import android.widget.PopupWindow;
 
 import com.example.myreadfdemo.R;
 import com.example.myreadfdemo.ui.activity.EditNoteActivity;
+import com.example.myreadfdemo.ui.activity.OfficeFileListActivity;
 
 /**
  * Created by lixinyu on 2017/5/12.
@@ -118,7 +120,9 @@ public class MainAddPopupWindow extends PopupWindow implements Animation.Animati
 				break;
 			}
 			case R.id.main_popup_add_btn_lead: {
-				
+				Intent intent = new Intent(mContext, OfficeFileListActivity.class);
+				mContext.startActivity(intent);
+				dismiss();
 				break;
 			}
 			default: {

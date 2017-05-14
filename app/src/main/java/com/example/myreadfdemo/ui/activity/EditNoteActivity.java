@@ -38,6 +38,12 @@ public class EditNoteActivity extends AppCompatActivity {
 		context.startActivity(intent);
 	}
 
+	public static void startForOfficeLead(Context context, String officeFilePath){
+		Intent intent = new Intent(context, EditNoteActivity.class);
+		intent.putExtra("officeFilePath", officeFilePath);
+		context.startActivity(intent);
+	}
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {

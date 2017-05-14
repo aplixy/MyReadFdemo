@@ -8,6 +8,8 @@ import android.widget.EditText;
 
 import com.example.myreadfdemo.R;
 import com.example.myreadfdemo.broadcast.BroadcastManager;
+import com.example.myreadfdemo.office.render.IBaseOfficeRender;
+import com.example.myreadfdemo.office.render.RenderFactory;
 import com.example.myreadfdemo.utils.NoteSaveHelper;
 import com.xinyu.xylibrary.ui.fragment.BaseFragment;
 
@@ -26,6 +28,9 @@ public class EditNoteFragment extends BaseFragment {
 	private String mTitle;
 	private String mContent;
 	private long mId;
+	
+	private String mOfficeFilePath;
+	private IBaseOfficeRender mOfficeRender;
 
 	public static Fragment newInstance() {
 		EditNoteFragment fragment = new EditNoteFragment();
@@ -49,6 +54,7 @@ public class EditNoteFragment extends BaseFragment {
 		if (null != args) {
 			mTitle = args.getString("title", "");
 			mId = args.getLong("id", 0);
+			mOfficeFilePath = args.getString("officeFilePath");
 		}
 	}
 
@@ -73,13 +79,23 @@ public class EditNoteFragment extends BaseFragment {
 
 	@Override
 	protected void firstLoadData() {
-		mContent = NoteSaveHelper.getInstance().readNote(mId);
+		if (null != mOfficeFilePath && mOfficeFilePath.length() > 0) {
+			mOfficeRender = RenderFactory.getRender(mOfficeFilePath);
+		} else {
+			mContent = NoteSaveHelper.getInstance().readNote(mId);
+		}
 	}
 
 	@Override
 	protected void bindData() {
-		mEtTitle.setText(mTitle);
-		mEtContent.setText(mContent);
+		if (null == mOfficeRender) {
+			mEtTitle.setText(mTitle);
+			mEtContent.setText(mContent);
+		} else {
+			mOfficeRender.render(mEtContent);
+			CharSequence content = mEtContent.getText();
+			mEtTitle.setText(content.subSequence(0, Math.min(20, content.length())));
+		}
 	}
 
 	@Override

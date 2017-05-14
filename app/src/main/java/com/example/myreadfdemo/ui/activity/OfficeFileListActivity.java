@@ -1,13 +1,14 @@
 package com.example.myreadfdemo.ui.activity;
 
 import android.Manifest;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.myreadfdemo.R;
 import com.example.myreadfdemo.ui.adapter.ListItem;
@@ -21,18 +22,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity1 extends AppCompatActivity implements AdapterView.OnItemClickListener {
+public class OfficeFileListActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 	
 	private SwipeRefreshLayout mSwipeRefreshLayout;
 	
 	private ListView mListView;
 	private List<ListItem> mDatas;
 	private MyAdapter mAdapter;
+	
+	private TextView mErrorView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main1);
+
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 		findVies();
 		init();
@@ -42,9 +47,12 @@ public class MainActivity1 extends AppCompatActivity implements AdapterView.OnIt
 	private void findVies() {
 		mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.main_swiperefreshlayout);
 		mListView = (ListView) findViewById(R.id.main_listview);
+		mErrorView = (TextView) findViewById(R.id.main_error_view);
 	}
 
 	private void init() {
+		mListView.setEmptyView(mErrorView);
+		
 		PermissionUtil.getInstance().request(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
 				new PermissionResultCallBack() {
 					@Override
@@ -88,31 +96,40 @@ public class MainActivity1 extends AppCompatActivity implements AdapterView.OnIt
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		ListItem item = mDatas.get(position);
 		if (null != item) {
-			Intent intent = new Intent(this, FileReadActivity.class);
-			intent.putExtra("filePath", item.filePath);
-			startActivity(intent);
+//			Intent intent = new Intent(this, FileReadActivity.class);
+//			intent.putExtra("filePath", item.filePath);
+//			startActivity(intent);
+
+			EditNoteActivity.startForOfficeLead(this, item.filePath);
+			finish();
+
+			
 		}
 	}
 	
 	private void loadData() {
-		
+		mErrorView.setText("正在加载...");
 		FileUtils.getSuffixesFile(new String[]{"doc", "docx"}, new FileUtils.FileResultListener() {
 			@Override
 			public void onResult(List<File> files) {
+//				if (null == files || files.size() == 0) {
+//					files = new ArrayList<File>();
+//					FileUtils.copySingleAssetsToDst(OfficeFileListActivity.this, "test_assets.doc", FileUtils.APP_PATH + "test_assets.doc");
+//					FileUtils.copySingleAssetsToDst(OfficeFileListActivity.this, "test_assets.docx", FileUtils.APP_PATH + "test_assets.docx");
+//
+//					files.add(new File(FileUtils.APP_PATH + "test_assets.doc"));
+//					files.add(new File(FileUtils.APP_PATH + "test_assets.docx"));
+//				}
+//
+//				FileUtils.copySingleAssetsToDst(OfficeFileListActivity.this, "test_assets3.doc", FileUtils.APP_PATH + "test_assets3.doc");
+//				FileUtils.copySingleAssetsToDst(OfficeFileListActivity.this, "test_assets2.docx", FileUtils.APP_PATH + "test_assets2.docx");
+//
+//				files.add(new File(FileUtils.APP_PATH + "test_assets3.doc"));
+//				files.add(new File(FileUtils.APP_PATH + "test_assets2.docx"));
+
 				if (null == files || files.size() == 0) {
 					files = new ArrayList<File>();
-					FileUtils.copySingleAssetsToDst(MainActivity1.this, "test_assets.doc", FileUtils.APP_PATH + "test_assets.doc");
-					FileUtils.copySingleAssetsToDst(MainActivity1.this, "test_assets.docx", FileUtils.APP_PATH + "test_assets.docx");
-
-					files.add(new File(FileUtils.APP_PATH + "test_assets.doc"));
-					files.add(new File(FileUtils.APP_PATH + "test_assets.docx"));
 				}
-
-				FileUtils.copySingleAssetsToDst(MainActivity1.this, "test_assets3.doc", FileUtils.APP_PATH + "test_assets3.doc");
-				FileUtils.copySingleAssetsToDst(MainActivity1.this, "test_assets2.docx", FileUtils.APP_PATH + "test_assets2.docx");
-
-				files.add(new File(FileUtils.APP_PATH + "test_assets3.doc"));
-				files.add(new File(FileUtils.APP_PATH + "test_assets2.docx"));
 				
 				mDatas = new ArrayList<ListItem>();
 				for (File file : files) {
@@ -134,12 +151,26 @@ public class MainActivity1 extends AppCompatActivity implements AdapterView.OnIt
 
 					mDatas.add(item);
 				}
+				
+				if (null == mDatas || mDatas.size() == 0) {
+					mErrorView.setText("您的手机中没有Word文档");			
+				}
 
-				mAdapter = new MyAdapter(MainActivity1.this, mDatas);
+				mAdapter = new MyAdapter(OfficeFileListActivity.this, mDatas);
 				mListView.setAdapter(mAdapter);
 
 				mSwipeRefreshLayout.setRefreshing(false);
 			}
 		});
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case android.R.id.home:
+				finish();
+				break;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 }

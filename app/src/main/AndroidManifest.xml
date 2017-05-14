@@ -34,6 +34,8 @@
             android:label="@string/title_activity_login"/>
         
         <activity android:name=".ui.activity.EditNoteActivity" />
+        
+        <activity android:name=".ui.activity.OfficeFileListActivity" />
 
         <provider
             android:name=".database.NoteProvider"
