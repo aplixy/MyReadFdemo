@@ -33,7 +33,7 @@ public abstract class BaseFragment extends Fragment {
 	
 	protected UiHandler mUiHandler;
 	
-	private WeakRunnable mRunnable;
+	private WeakBackgroundRunnable mBackgroundRunnable;
 	
 	protected View mView;
 	protected FragmentActivity mActivity;
@@ -53,7 +53,7 @@ public abstract class BaseFragment extends Fragment {
 
 		mUiHandler = new UiHandler();
 		
-		mRunnable = new WeakRunnable(this, mUiHandler);
+		mBackgroundRunnable = new WeakBackgroundRunnable(this, mUiHandler);
 	}
 
 
@@ -139,15 +139,15 @@ public abstract class BaseFragment extends Fragment {
 	 */
 	protected void loadData() {
 		showProgressBar(true);
-		mBackgroundHandler.post(mRunnable);
+		mBackgroundHandler.post(mBackgroundRunnable);
 	}
 
-	private static class WeakRunnable implements Runnable {
+	private static class WeakBackgroundRunnable implements Runnable {
 
 		WeakReference<BaseFragment> mMainFragmentReference;
 		WeakReference<UiHandler> mUiHandlerRefrence;
 
-		public WeakRunnable(BaseFragment fragment, UiHandler uiHandler) {
+		public WeakBackgroundRunnable(BaseFragment fragment, UiHandler uiHandler) {
 			this.mMainFragmentReference = new WeakReference<BaseFragment>(fragment);
 			this.mUiHandlerRefrence = new WeakReference<UiHandler>(uiHandler);
 		}
@@ -157,10 +157,8 @@ public abstract class BaseFragment extends Fragment {
 			BaseFragment fragment = mMainFragmentReference.get();
 			UiHandler uiHandler = mUiHandlerRefrence.get();
 			if (fragment != null && !fragment.isDetached() && uiHandler != null) {
-				fragment.firstLoadData();
-
+				fragment.firstLoadDataBackground();
 				uiHandler.sendEmptyMessage(MSG_CODE_UI);
-				
 				
 			}
 		}
@@ -171,15 +169,7 @@ public abstract class BaseFragment extends Fragment {
 		mHttpUitls.sendHttpRequest(url, callback);
 	}
 
-	protected abstract int getLayoutRes();
-	protected abstract void findViews(View view);
-	protected abstract void getArgs();
-	protected abstract void initWidget();
-	protected abstract void setListener();
-
-	protected abstract void showProgressBar(boolean show);
-	protected abstract void bindData();
-	protected abstract void firstLoadData();
+	
 
 	// 后台Handler
 	public class BackgroundHandler extends Handler {
@@ -196,6 +186,7 @@ public abstract class BaseFragment extends Fragment {
 	}
 	
 	public class UiHandler extends Handler {
+		
 		@Override
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
@@ -209,4 +200,14 @@ public abstract class BaseFragment extends Fragment {
 			handleUiMessage(msg);
 		}
 	}
+
+	protected abstract int getLayoutRes();
+	protected abstract void findViews(View view);
+	protected abstract void getArgs();
+	protected abstract void initWidget();
+	protected abstract void setListener();
+
+	protected abstract void showProgressBar(boolean show);
+	protected abstract void bindData();
+	protected abstract void firstLoadDataBackground();
 }

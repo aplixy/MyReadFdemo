@@ -11,12 +11,12 @@ import com.example.myreadfdemo.broadcast.BroadcastManager;
 import com.example.myreadfdemo.office.render.IBaseOfficeRender;
 import com.example.myreadfdemo.office.render.RenderFactory;
 import com.example.myreadfdemo.utils.NoteSaveHelper;
-import com.xinyu.xylibrary.ui.fragment.BaseFragment;
+import com.xinyu.xylibrary.ui.fragment.BaseRxFragment;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class EditNoteFragment extends BaseFragment {
+public class EditNoteFragment extends BaseRxFragment {
 
     public static final String TAG = EditNoteFragment.class.getSimpleName();
 
@@ -78,7 +78,7 @@ public class EditNoteFragment extends BaseFragment {
 
 
 	@Override
-	protected void firstLoadData() {
+	protected void firstLoadDataBackground() {
 		if (null != mOfficeFilePath && mOfficeFilePath.length() > 0) {
 			mOfficeRender = RenderFactory.getRender(mOfficeFilePath);
 		} else {

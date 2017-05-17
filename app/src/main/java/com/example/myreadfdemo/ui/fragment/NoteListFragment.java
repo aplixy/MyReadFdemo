@@ -20,7 +20,7 @@ import com.example.myreadfdemo.broadcast.BroadcastManager;
 import com.example.myreadfdemo.database.dao.NoteDao;
 import com.example.myreadfdemo.database.entity.NoteEntity;
 import com.example.myreadfdemo.ui.activity.EditNoteActivity;
-import com.xinyu.xylibrary.ui.fragment.BaseFragment;
+import com.xinyu.xylibrary.ui.fragment.BaseRxFragment;
 import com.xinyu.xylibrary.ui.widget.EndlessRecyclerOnScrollListener;
 import com.xinyu.xylibrary.ui.widget.RecycleViewDivider;
 import com.xinyu.xylibrary.utils.DateUtils;
@@ -32,24 +32,22 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class NoteListFragment extends BaseFragment {
+public class NoteListFragment extends BaseRxFragment {
 
 	public static final String TAG = NoteListFragment.class.getSimpleName();
 
 	private RecyclerView mRecyclerView;
 	private RecyclerAdapter mRecyclerAdapter;
-	
-	private ProgressBar mProgressBar;
-	
 	private List<NoteEntity> mDatas = new ArrayList<>();
 	private List<NoteEntity> mDbData;
 	
-	private NoteDao mDao;
-	
-	private RefreshListReceiver mRefreshReceiver;
-	
+	private ProgressBar mProgressBar;
 	private SwipeRefreshLayout mSwipeRefreshLayout;
 	private TextView mTvEmpty;
+	
+	private NoteDao mDao;
+	private RefreshListReceiver mRefreshReceiver;
+	
 
 	public static Fragment newInstance() {
 		NoteListFragment fragment = new NoteListFragment();
@@ -64,7 +62,7 @@ public class NoteListFragment extends BaseFragment {
 
 	@Override
 	protected int getLayoutRes() {
-		return R.layout.fragment_main;
+		return R.layout.fragment_note_list;
 	}
 
 	@Override
@@ -127,7 +125,7 @@ public class NoteListFragment extends BaseFragment {
 	
 
 	@Override
-	protected void firstLoadData() {
+	protected void firstLoadDataBackground() {
 		mDbData = mDao.queryAll();
 	}
 
