@@ -3,6 +3,7 @@ package com.example.myreadfdemo.utils;
 import com.example.myreadfdemo.database.dao.NoteDao;
 import com.example.myreadfdemo.database.entity.NoteEntity;
 import com.xinyu.xylibrary.utils.FileUtils;
+import com.xinyu.xylibrary.utils.TextUtils;
 
 import java.io.File;
 
@@ -36,11 +37,16 @@ public class NoteSaveHelper {
 	}
 	
 	public void saveNote(long id, String title, String content) {
+		if (TextUtils.isEmpty(title) && TextUtils.isEmpty(content)) return;
+		
 		content = null == content ? "" : content;
 		
 		NoteEntity entity = new NoteEntity();
 		entity.title = title;
-		entity.summary = content.substring(0, Math.min(50, content.length()));
+		String summary = content.substring(0, Math.min(50, content.length()));
+		
+		
+		entity.summary = summary;
 		
 		if (id > 0) {
 			entity.id = id;
